@@ -6,6 +6,10 @@ require('dotenv').config();
 
 const app = express();
 
+mongoose.connect(process.env.MONGO_URI).then(()=>console.log('db Connected')).catch((err)=>{
+    console.log(`error is: ${err}`);
+})
+
 // Middleware
 app.use(cors());  //, adding cors middleware makes the setup simple and allows all or specific origins to access the backend resources as needed.
 app.use(express.json());
@@ -13,7 +17,8 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 
-// Connect to MongoDB and Start Server
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`)))
-  .catch((err) => console.log(err));
+
+
+  app.listen(process.env.PORT || 3002, ()=>{
+    console.log(`Example app listening app on port ${process.env.PORT}`);
+});

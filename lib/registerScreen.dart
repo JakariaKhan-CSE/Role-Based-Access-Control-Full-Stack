@@ -1,43 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:role_based_access/registerScreen.dart';
+import 'package:role_based_access/loginScreen.dart';
 import 'dart:convert';
 
 import 'package:role_based_access/roleScreen.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _key = GlobalKey<FormState>();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Future<void> loginUser() async {
+  List<String> role = ['admin', 'doctor', 'patient', 'pharmacist', 'lab_technician'];
+  String roleValue = 'admin';
+
+  Future<void> signUpUser() async {
     final response = await http.post(
-      Uri.parse('http://10.0.0.100:5000/api/auth/login'),
+      Uri.parse('http://10.0.0.100:5000/api/auth/register'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
+        'username': usernameController.text,
         'email': emailController.text,
-        'password': passwordController.text,
+        'getPassword': passwordController.text,
+        "role": roleValue
       }),
     );
+print(response.statusCode);
+    if (response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Registered Successfully'),backgroundColor: Colors.green,));
 
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login Successfull'),backgroundColor: Colors.green,));
-      final data = jsonDecode(response.body);
-      final role = data['role'];
-
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => RoleScreen(role: role),
+          builder: (context) => LoginScreen(),
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login Failed'),backgroundColor: Colors.red,));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to Register'),backgroundColor: Colors.red,));
     }
   }
 
@@ -46,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
 
       appBar: PreferredSize(preferredSize: const Size.fromHeight(50),
-        child: AppBar(title: Text('Login'),
+        child: AppBar(title: Text('SignUp'),
           centerTitle: true,
         ),
       ),
@@ -66,9 +70,26 @@ class _LoginScreenState extends State<LoginScreen> {
               )),
               const SizedBox(height: 50,),
               TextFormField(
+                controller: usernameController,
+                decoration: InputDecoration(
+                    hintText: "User Name"
+                ),
+                keyboardType: TextInputType.text,
+                validator: (name){
+                  if(name!.isEmpty  )  // email filed jodi empty hoi and @ na thake tahole invalid message return korbe
+                      {
+                    return "Please enter a name";
+                  }
+                  else{
+                    return null;
+                  }
+                },
+              ),
+              const SizedBox(height: 20,),
+              TextFormField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hintText: "Email"
+                    hintText: "Email"
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (email){
@@ -104,22 +125,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: GestureDetector(
                   // Get.offAll use koresi jeno login page ba signup age theke back korle onno page a na jai karon login, signup page e jawar jonno already button deya ase
                   onTap: (){
-                    // go to register page
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterScreen(),));
+                    // go to login page
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
                   },
-                  child: const Text("Register",style: TextStyle(
+                  child: const Text("Login",style: TextStyle(
                       color: Colors.black,
                       fontSize: 14,
                       fontWeight: FontWeight.w500
                   ),),
                 ),
               ),
+              DropdownMenu<String>(
+                  initialSelection: roleValue,  // initially public toilet select
+                  onSelected: (String? val){
+                    // This is called when the user selects an item.
+                    setState(() {
+                      roleValue = val!;
+                    });
+                  },
+                  dropdownMenuEntries: role.map<DropdownMenuEntry<String>>((String value){
+                    return DropdownMenuEntry<String>(value: value, label: value);
+                  }).toList()
+              ),
               const SizedBox(height: 50,),
               ElevatedButton(onPressed: (){
                 if(_key.currentState!.validate()){
-loginUser();
+                  //call signup user
+                  signUpUser();
                 }
-              }, child: Text('Login'))
+              }, child: Text('SignUp'))
 
 
             ],

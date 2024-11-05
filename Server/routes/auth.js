@@ -7,14 +7,22 @@ const { authMiddleware } = require('../middleware/authMiddleware');  // same as 
 
 // Register User
 router.post('/register', async (req, res) => {
+ 
   try {
-    const { username, email, password, role } = req.body;
-
-    // Create new user
+    const { username, email, getPassword, role } = req.body;
+// console.log(username);
+// console.log(email);
+// console.log(getPassword);
+// console.log(role);
+    // Hash the password before saving
+    const password = await bcrypt.hash(getPassword, 8);
+    // console.log(password);
+    // Create new user with hashed password
     const user = new User({ username, email, password, role });
-    await user.save();
+    // console.log(user);
+    const savedUser = await user.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'User registered successfully', savedUser });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -22,6 +30,7 @@ router.post('/register', async (req, res) => {
 
 // Login User
 router.post('/login', async (req, res) => {
+  
   try {
     const { email, password } = req.body;
 
