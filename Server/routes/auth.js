@@ -55,8 +55,9 @@ router.post('/login', async (req, res) => {
 
 // Protected Route Example
 router.get('/dashboard', authMiddleware, (req, res) => {
-  const { role } = req.user;
-
+  // console.log('dashboard api call');
+  const  role  = req.user.role;
+// console.log(role);
   // Send different responses based on the user role
   switch (role) {
     case 'doctor':

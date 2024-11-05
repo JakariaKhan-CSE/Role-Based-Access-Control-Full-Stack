@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:role_based_access/roleScreen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -26,18 +28,19 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login Successfull'),backgroundColor: Colors.green,));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successfull'),backgroundColor: Colors.green,));
       final data = jsonDecode(response.body);
-      final role = data['role'];
+      // final role = data['role'];
+      final token = data['token'];  // same as res.json({ token, role: user.role });
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => RoleScreen(role: role),
+          builder: (context) => RoleScreen(token: token,),
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login Failed'),backgroundColor: Colors.red,));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Failed'),backgroundColor: Colors.red,));
     }
   }
 
@@ -46,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
 
       appBar: PreferredSize(preferredSize: const Size.fromHeight(50),
-        child: AppBar(title: Text('Login'),
+        child: AppBar(title: const Text('Login'),
           centerTitle: true,
         ),
       ),
@@ -67,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 50,),
               TextFormField(
                 controller: emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Email"
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -84,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20,),
               TextFormField(
                 controller: passwordController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     hintText: "Password"
                 ),
                 keyboardType: TextInputType.text,
@@ -105,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Get.offAll use koresi jeno login page ba signup age theke back korle onno page a na jai karon login, signup page e jawar jonno already button deya ase
                   onTap: (){
                     // go to register page
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterScreen(),));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RegisterScreen(),));
                   },
                   child: const Text("Register",style: TextStyle(
                       color: Colors.black,
@@ -119,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if(_key.currentState!.validate()){
 loginUser();
                 }
-              }, child: Text('Login'))
+              }, child: const Text('Login'))
 
 
             ],

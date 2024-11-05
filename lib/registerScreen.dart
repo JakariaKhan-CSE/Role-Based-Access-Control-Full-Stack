@@ -3,9 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:role_based_access/loginScreen.dart';
 import 'dart:convert';
 
-import 'package:role_based_access/roleScreen.dart';
 
 class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
@@ -32,16 +33,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 print(response.statusCode);
     if (response.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Registered Successfully'),backgroundColor: Colors.green,));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registered Successfully'),backgroundColor: Colors.green,));
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginScreen(),
+          builder: (context) => const LoginScreen(),
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to Register'),backgroundColor: Colors.red,));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to Register'),backgroundColor: Colors.red,));
     }
   }
 
@@ -50,7 +51,7 @@ print(response.statusCode);
     return Scaffold(
 
       appBar: PreferredSize(preferredSize: const Size.fromHeight(50),
-        child: AppBar(title: Text('SignUp'),
+        child: AppBar(title: const Text('SignUp'),
           centerTitle: true,
         ),
       ),
@@ -71,7 +72,7 @@ print(response.statusCode);
               const SizedBox(height: 50,),
               TextFormField(
                 controller: usernameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     hintText: "User Name"
                 ),
                 keyboardType: TextInputType.text,
@@ -88,7 +89,7 @@ print(response.statusCode);
               const SizedBox(height: 20,),
               TextFormField(
                 controller: emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     hintText: "Email"
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -105,7 +106,7 @@ print(response.statusCode);
               const SizedBox(height: 20,),
               TextFormField(
                 controller: passwordController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     hintText: "Password"
                 ),
                 keyboardType: TextInputType.text,
@@ -126,7 +127,7 @@ print(response.statusCode);
                   // Get.offAll use koresi jeno login page ba signup age theke back korle onno page a na jai karon login, signup page e jawar jonno already button deya ase
                   onTap: (){
                     // go to login page
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen(),));
                   },
                   child: const Text("Login",style: TextStyle(
                       color: Colors.black,
@@ -153,7 +154,7 @@ print(response.statusCode);
                   //call signup user
                   signUpUser();
                 }
-              }, child: Text('SignUp'))
+              }, child: const Text('SignUp'))
 
 
             ],
